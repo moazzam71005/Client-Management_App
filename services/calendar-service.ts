@@ -1,8 +1,8 @@
-import { google } from 'googleapis'
 import { createClient } from '@/lib/supabase/server'
 
 export class CalendarService {
     private async getAuthClient(userId: string) {
+        const { google } = await import('googleapis')
         const supabase = await createClient()
         const { data: { session } } = await supabase.auth.getSession()
 
@@ -34,6 +34,7 @@ export class CalendarService {
     }
 
     async listEvents(userId: string, timeMin?: string, timeMax?: string) {
+        const { google } = await import('googleapis')
         const auth = await this.getAuthClient(userId)
         const calendar = google.calendar({ version: 'v3', auth })
 
@@ -50,3 +51,4 @@ export class CalendarService {
         return response.data.items || []
     }
 }
+

@@ -47,9 +47,9 @@ export default function LoginPage() {
 
                 <div className="relative z-10 flex items-center gap-2 font-bold text-xl">
                     <div className="size-8 rounded-lg bg-white/10 flex items-center justify-center backdrop-blur-sm">
-                        <span>CM</span>
+                        <span>CS</span>
                     </div>
-                    ClientManager
+                    ClientStream
                 </div>
 
                 <div className="relative z-10 space-y-4">
@@ -62,7 +62,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="relative z-10 text-sm text-zinc-400">
-                    © 2024 Client Manager Inc.
+                    © 2024 ClientStream Inc.
                 </div>
             </div>
 

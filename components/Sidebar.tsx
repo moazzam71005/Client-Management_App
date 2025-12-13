@@ -30,9 +30,9 @@ export function Sidebar() {
             <div className="flex h-16 items-center px-6 border-b">
                 <div className="flex items-center gap-2 font-bold text-xl text-primary">
                     <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary">CM</span>
+                        <span className="text-primary">CS</span>
                     </div>
-                    ClientManager
+                    ClientStream
                 </div>
             </div>
             <div className="flex-1 overflow-y-auto py-4">

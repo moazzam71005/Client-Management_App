@@ -1,4 +1,3 @@
-import { google } from 'googleapis'
 import { createClient } from '@/lib/supabase/server'
 
 export interface SendEmailInput {
@@ -9,6 +8,7 @@ export interface SendEmailInput {
 
 export class EmailService {
     private async getAuthClient(userId: string) {
+        const { google } = await import('googleapis')
         const supabase = await createClient()
         const { data: { session } } = await supabase.auth.getSession()
 
@@ -32,6 +32,7 @@ export class EmailService {
     }
 
     async sendEmails(userId: string, { to, subject, body }: SendEmailInput) {
+        const { google } = await import('googleapis')
         const auth = await this.getAuthClient(userId)
         const gmail = google.gmail({ version: 'v1', auth })
 
