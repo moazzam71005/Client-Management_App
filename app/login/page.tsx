@@ -62,7 +62,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="relative z-10 text-sm text-zinc-400">
-                    © 2024 ClientStream Inc.
+                    © 2025 ClientStream Inc.
                 </div>
             </div>
 

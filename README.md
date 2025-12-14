@@ -1,38 +1,108 @@
-# ClientStream
+# ClientStream - Client Management Application
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ClientStream is a full-stack web application designed for managing clients, synchronizing with Google Calendar, and sending personalized emails via Gmail. Built with modern web technologies, it offers a seamless experience for professionals to organize their workflow.
 
-## Getting Started
+## 🚀 Features
 
-First, run the development server:
+- **Google OAuth Authentication**: Secure login and session management via Supabase.
+- **Client Management**: Full CRUD operations for managing client details (valid only for the owner).
+- **Google Calendar Sync**: View and filter events (Today, Week, Month) directly from the dashboard.
+- **Email System**: Send personalized emails to multiple clients using the Gmail API.
+- **Email Templates**: Create and use reusable email templates with dynamic placeholders (e.g., `{{client_name}}`).
+- **Responsive Design**: "Pimped up" UI with dark mode support and smooth animations.
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS
+- **State Management**: TanStack Query (React Query)
+- **Backend**: Next.js API Routes
+- **Database**: Supabase (PostgreSQL)
+- **Validation**: Zod
+- **External APIs**: Google Calendar API, Gmail API
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following:
+
+- Node.js (v18 or higher)
+- npm or yarn
+- A **Supabase** project
+- A **Google Cloud Console** project with Calendar and Gmail APIs enabled
+
+## ⚙️ Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository_url>
+   cd clientstream
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+## 🔧 Configuration
+
+### 1. Environment Variables
+
+Copy the example environment file and configure your keys:
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in the `.env.local` file with your credentials:
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Google OAuth (Obtained from Google Cloud Console)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# App Base URL
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+### 2. Database Setup
+
+1. Go to your **Supabase Dashboard** -> **SQL Editor**.
+2. Run the specific SQL scripts provided in the project to set up the tables and security policies:
+   - Run `schema.sql` (Creates `clients` table and policies).
+   - Run `schema_templates.sql` (Creates `email_templates` table and policies).
+
+### 3. Google Cloud Setup
+
+1. Create OAuth 2.0 credentials in [Google Cloud Console](https://console.cloud.google.com/).
+2. Add `http://localhost:3000` to "Authorized Javascript origins" (if applicable, though usually Supabase handles the redirection).
+3. Add the callback URL from your Supabase Auth settings to "Authorized redirect URIs".
+4. Enable **Google Calendar API** and **Gmail API**.
+5. In Supabase Authentication -> Providers -> Google, enter your Client ID and Secret.
+
+## 🏃‍♂️ Running the App
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📸 Screenshots
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+![App Screenshot 1](screenshots/Screenshot%202025-12-14%20130110.png)
+![App Screenshot 2](screenshots/Screenshot%202025-12-14%20130124.png)
+![App Screenshot 3](screenshots/Screenshot%202025-12-14%20130208.png)
+![App Screenshot 4](screenshots/Screenshot%202025-12-14%20130222.png)
+![App Screenshot 5](screenshots/Screenshot%202025-12-14%20130239.png)
+![App Screenshot 6](screenshots/Screenshot%202025-12-14%20130250.png)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is for educational/technical test purposes.
