@@ -2,12 +2,7 @@ import { NextResponse } from 'next/server'
 import { EmailService, SendEmailInput } from '@/services/email-service'
 import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
-
-const emailSchema = z.object({
-    recipients: z.array(z.string().email()).min(1, 'At least one recipient is required'),
-    subject: z.string().min(1, 'Subject is required'),
-    body: z.string().min(1, 'Body is required'),
-})
+import { emailSchema } from '@/dtos/email.dto'
 
 export async function POST(request: Request) {
     const supabase = await createClient()
@@ -29,11 +24,20 @@ export async function POST(request: Request) {
         })
 
         return NextResponse.json(results)
-    } catch (error) {
+    } catch (error: any) {
         if (error instanceof z.ZodError) {
             return new NextResponse(JSON.stringify(error.issues), { status: 400 })
         }
         console.error('Error sending emails:', error)
-        return new NextResponse('Internal Server Error', { status: 500 })
+        if (error.message?.includes('Google connection not found')) {
+            return NextResponse.json(
+                { error: 'Google connection not found. Please connect your Google account to send emails.' },
+                { status: 403 }
+            )
+        }
+        return NextResponse.json(
+            { error: 'Failed to send emails' },
+            { status: 500 }
+        )
     }
 }

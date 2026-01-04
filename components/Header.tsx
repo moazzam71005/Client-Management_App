@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { GoogleConnection } from "./google-connection";
 
 export function Header() {
     const pathname = usePathname();
@@ -10,6 +11,7 @@ export function Header() {
         if (pathname.includes("/dashboard/clients")) return "Clients";
         if (pathname.includes("/dashboard/calendar")) return "Calendar";
         if (pathname.includes("/dashboard/email")) return "Email Center";
+        if (pathname.includes("/dashboard/templates")) return "Email Templates";
         return "Dashboard";
     };
 
@@ -19,6 +21,7 @@ export function Header() {
                 <h1 className="text-xl font-semibold text-foreground">{getTitle()}</h1>
             </div>
             <div className="flex items-center gap-4">
+                <GoogleConnection />
                 <div className="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm">
                     U
                 </div>

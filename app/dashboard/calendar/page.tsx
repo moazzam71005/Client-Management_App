@@ -55,8 +55,12 @@ export default function CalendarPage() {
 
             const res = await fetch(`/api/calendar/events?${params.toString()}`);
             if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                if (res.status === 403 && data.error?.includes('Google connection')) {
+                    throw new Error("GOOGLE_NOT_CONNECTED");
+                }
                 if (res.status === 401) throw new Error("Auth Error");
-                throw new Error("Failed to fetch events");
+                throw new Error(data.error || "Failed to fetch events");
             }
             return res.json();
         },
@@ -122,7 +126,9 @@ export default function CalendarPage() {
                 <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center text-red-900 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-200">
                     <p className="font-medium">Connection Error</p>
                     <p className="mt-1 text-sm text-red-700 dark:text-red-300">
-                        Could not sync with Google Calendar. Try re-authenticating.
+                        {isError && (isError as Error).message === "GOOGLE_NOT_CONNECTED"
+                            ? "Please connect your Google account in the header to sync your calendar."
+                            : "Could not sync with Google Calendar. Please check your connection."}
                     </p>
                 </div>
             ) : !groupedEvents || Object.keys(groupedEvents).length === 0 ? (

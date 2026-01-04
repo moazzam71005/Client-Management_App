@@ -1,0 +1,50 @@
+# Supabase Local Development Configuration
+# This file configures Supabase CLI for local development
+
+[project]
+# Project ID (auto-generated)
+id = "local"
+
+[auth]
+# Enable email authentication
+enable_signup = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+
+[api]
+# API configuration
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+# Database configuration
+port = 54322
+major_version = 15
+
+[studio]
+# Supabase Studio configuration
+enabled = true
+port = 54323
+
+[inbucket]
+# Email testing (for magic links)
+enabled = true
+port = 54324
+smtp_port = 54325
+pop3_port = 54326
+
+[storage]
+# Storage configuration
+enabled = true
+file_size_limit = "50MiB"
+
+[functions]
+# Edge Functions configuration
+enabled = false
+

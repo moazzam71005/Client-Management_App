@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { GoogleConnectionService } from './google-connection-service'
 
 export interface SendEmailInput {
     to: string[]
@@ -7,16 +7,22 @@ export interface SendEmailInput {
 }
 
 export class EmailService {
+    private connectionService: GoogleConnectionService
+
+    constructor() {
+        this.connectionService = new GoogleConnectionService()
+    }
+
     private async getAuthClient(userId: string) {
         const { google } = await import('googleapis')
-        const supabase = await createClient()
-        const { data: { session } } = await supabase.auth.getSession()
+        
+        // Get or refresh the access token
+        const accessToken = await this.connectionService.refreshTokenIfNeeded(userId)
+        const connection = await this.connectionService.getConnection(userId)
 
-        if (!session || session.user.id !== userId) {
-            throw new Error('Unauthorized')
+        if (!connection) {
+            throw new Error('Google connection not found. Please connect your Google account.')
         }
-
-        const { provider_token, provider_refresh_token } = session
 
         const oAuth2Client = new google.auth.OAuth2(
             process.env.GOOGLE_CLIENT_ID,
@@ -24,8 +30,8 @@ export class EmailService {
         )
 
         oAuth2Client.setCredentials({
-            access_token: provider_token,
-            refresh_token: provider_refresh_token,
+            access_token: accessToken,
+            refresh_token: connection.refresh_token,
         })
 
         return oAuth2Client

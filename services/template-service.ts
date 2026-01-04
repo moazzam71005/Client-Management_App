@@ -1,14 +1,7 @@
 import { TemplateRepository } from '@/repos/template-repo'
-import { z } from 'zod'
+import { templateSchema, type CreateTemplateInput, type UpdateTemplateInput } from '@/dtos/template.dto'
 
-const templateSchema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    subject: z.string().min(1, 'Subject is required'),
-    body: z.string().min(1, 'Body is required'),
-})
-
-export type CreateTemplateInput = z.infer<typeof templateSchema>
-export type UpdateTemplateInput = Partial<CreateTemplateInput>
+export type { CreateTemplateInput, UpdateTemplateInput }
 
 export class TemplateService {
     private repo: TemplateRepository

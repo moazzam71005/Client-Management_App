@@ -4,12 +4,13 @@ ClientStream is a full-stack web application designed for managing clients, sync
 
 ## 🚀 Features
 
-- **Google OAuth Authentication**: Secure login and session management via Supabase.
+- **Supabase Authentication**: Secure login with email/password or magic link authentication.
+- **Google Integration**: Connect your Google account separately to sync calendar and send emails via Gmail.
 - **Client Management**: Full CRUD operations for managing client details (valid only for the owner).
 - **Google Calendar Sync**: View and filter events (Today, Week, Month) directly from the dashboard.
 - **Email System**: Send personalized emails to multiple clients using the Gmail API.
 - **Email Templates**: Create and use reusable email templates with dynamic placeholders (e.g., `{{client_name}}`).
-- **Responsive Design**: "Pimped up" UI with dark mode support and smooth animations.
+- **Responsive Design**: Modern UI with dark mode support and smooth animations.
 
 ## 🛠 Tech Stack
 
@@ -26,8 +27,8 @@ Before you begin, ensure you have the following:
 
 - Node.js (v18 or higher)
 - npm or yarn
-- A **Supabase** project
-- A **Google Cloud Console** project with Calendar and Gmail APIs enabled
+- A **Supabase** project (or Supabase CLI for local development)
+- A **Google Cloud Console** project with Calendar and Gmail APIs enabled (for Google integration)
 
 ## ⚙️ Installation
 
@@ -56,10 +57,12 @@ Fill in the `.env.local` file with your credentials:
 
 ```env
 # Supabase
+# Use publishable key (not anon key) - this is the new Supabase standard
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 
-# Google OAuth (Obtained from Google Cloud Console)
+# Google OAuth (For Google Calendar and Gmail integration)
+# Obtained from Google Cloud Console
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 
@@ -67,20 +70,53 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
+### Local Supabase Development (Recommended)
+
+For local development, you can run Supabase locally:
+
+1. Install Supabase CLI:
+   ```bash
+   npm install -g supabase
+   ```
+
+2. Start Supabase locally:
+   ```bash
+   supabase start
+   ```
+
+3. Update your `.env.local` with the local credentials provided by the CLI.
+
+See `supabase/README.md` for more details on local development.
+
 ### 2. Database Setup
 
+Run the SQL scripts to set up the database tables and security policies:
+
+**If using Supabase Cloud:**
 1. Go to your **Supabase Dashboard** -> **SQL Editor**.
-2. Run the specific SQL scripts provided in the project to set up the tables and security policies:
-   - Run `schema.sql` (Creates `clients` table and policies).
-   - Run `schema_templates.sql` (Creates `email_templates` table and policies).
+2. Run the following scripts in order:
+   - `schema.sql` (Creates `clients` table and policies)
+   - `schema_templates.sql` (Creates `email_templates` table and policies)
+   - `schema_google_connections.sql` (Creates `google_connections` table and policies)
+
+**If using Local Supabase:**
+```bash
+supabase db reset
+```
+Then run the SQL scripts via Supabase Studio or CLI.
 
 ### 3. Google Cloud Setup
 
-1. Create OAuth 2.0 credentials in [Google Cloud Console](https://console.cloud.google.com/).
-2. Add `http://localhost:3000` to "Authorized Javascript origins" (if applicable, though usually Supabase handles the redirection).
-3. Add the callback URL from your Supabase Auth settings to "Authorized redirect URIs".
-4. Enable **Google Calendar API** and **Gmail API**.
-5. In Supabase Authentication -> Providers -> Google, enter your Client ID and Secret.
+1. Create a project in [Google Cloud Console](https://console.cloud.google.com/).
+2. Enable the following APIs:
+   - **Google Calendar API**
+   - **Gmail API**
+3. Create OAuth 2.0 credentials (Web application):
+   - Add `http://localhost:3000/api/google/connect` to "Authorized redirect URIs"
+   - Add your production URL to "Authorized redirect URIs" for production
+4. Copy the Client ID and Client Secret to your `.env.local` file.
+
+**Note:** Google connection is separate from authentication. Users authenticate with Supabase Auth, then can optionally connect their Google account for calendar and email features.
 
 ## 🏃‍♂️ Running the App
 

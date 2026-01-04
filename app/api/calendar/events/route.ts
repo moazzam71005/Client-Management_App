@@ -20,9 +20,15 @@ export async function GET(request: Request) {
         return NextResponse.json(events)
     } catch (error: any) {
         console.error('Error fetching calendar events:', error)
-        if (error.message === 'Google OAuth token missing') {
-            return new NextResponse('Google Calendar not connected', { status: 401 })
+        if (error.message?.includes('Google connection not found')) {
+            return NextResponse.json(
+                { error: 'Google connection not found. Please connect your Google account.' },
+                { status: 403 }
+            )
         }
-        return new NextResponse('Internal Server Error', { status: 500 })
+        return NextResponse.json(
+            { error: 'Failed to fetch calendar events' },
+            { status: 500 }
+        )
     }
 }

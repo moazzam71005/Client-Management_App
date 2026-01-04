@@ -74,6 +74,13 @@ export default function EmailPage() {
                 }),
             });
             const data = await res.json();
+            
+            if (!res.ok && res.status === 403 && data.error?.includes('Google connection')) {
+                alert("Please connect your Google account in the header to send emails.");
+                setSending(false);
+                return;
+            }
+            
             setResults(data);
             if (res.ok) {
                 setSubject("");

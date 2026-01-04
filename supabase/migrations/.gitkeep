@@ -1,0 +1,3 @@
+# Supabase migrations will be stored here
+# Run: supabase migration new <migration_name>
+

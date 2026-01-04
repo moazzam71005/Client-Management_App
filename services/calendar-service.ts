@@ -1,23 +1,21 @@
-import { createClient } from '@/lib/supabase/server'
+import { GoogleConnectionService } from './google-connection-service'
 
 export class CalendarService {
+    private connectionService: GoogleConnectionService
+
+    constructor() {
+        this.connectionService = new GoogleConnectionService()
+    }
+
     private async getAuthClient(userId: string) {
         const { google } = await import('googleapis')
-        const supabase = await createClient()
-        const { data: { session } } = await supabase.auth.getSession()
+        
+        // Get or refresh the access token
+        const accessToken = await this.connectionService.refreshTokenIfNeeded(userId)
+        const connection = await this.connectionService.getConnection(userId)
 
-        if (!session || session.user.id !== userId) {
-            throw new Error('Unauthorized')
-        }
-
-        const { provider_token, provider_refresh_token } = session
-
-        if (!provider_token) {
-            // This effectively means the user didn't sign in with Google or scopes were missing. 
-            // In a real production app, we would handle re-auth or refresh token usage explicitly here if the session is stale but valid.
-            // Supabase Auth helpers theoretically handle refreshing the session token, but the *provider* token might need specific handling if not refreshed automatically by Supabase.
-            // However, Supabase stores the provider token in the session.
-            throw new Error('Google OAuth token missing')
+        if (!connection) {
+            throw new Error('Google connection not found. Please connect your Google account.')
         }
 
         const oAuth2Client = new google.auth.OAuth2(
@@ -26,8 +24,8 @@ export class CalendarService {
         )
 
         oAuth2Client.setCredentials({
-            access_token: provider_token,
-            refresh_token: provider_refresh_token,
+            access_token: accessToken,
+            refresh_token: connection.refresh_token,
         })
 
         return oAuth2Client
